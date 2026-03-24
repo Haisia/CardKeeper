@@ -43,7 +43,7 @@ Plans:
 - [x] 01-01-PLAN.md — Gradle setup: Compose BOM, KSP, Room, Hilt, CameraX, ML Kit, Navigation, Coil dependencies configured in build.gradle.kts
 - [x] 01-02-PLAN.md — Room schema: CardEntity, TagEntity, CardTagCrossRef, CardWithTags POJO, CardDao, TagDao, AppDatabase with schema export enabled
 - [ ] 01-03-PLAN.md — Hilt modules: DatabaseModule, StorageModule, OcrModule, RepositoryModule; repository interfaces and implementations; all bindings wired
-- [ ] 01-04-PLAN.md — Navigation scaffold: theme, AppNavHost with all five screen stubs, type-safe routes via @Serializable objects, MainActivity with bottom nav
+- [x] 01-04-PLAN.md — Navigation scaffold: theme, AppNavHost with all five screen stubs, type-safe routes via @Serializable objects, MainActivity with bottom nav
 **UI hint**: yes
 
 ### Phase 2: Camera + OCR
@@ -110,7 +110,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation | 2/4 | In Progress|  |
+| 1. Foundation | 3/4 | In Progress|  |
 | 2. Camera + OCR | 0/5 | Not started | - |
 | 3. CRUD + Tags + Search | 0/5 | Not started | - |
 | 4. Export + Polish | 0/3 | Not started | - |
