@@ -56,6 +56,9 @@
 | 태그 기반 분류 (폴더 아님) | 카드 하나가 여러 카테고리에 속할 수 있음 | — Pending |
 | Room DB 로컬 저장 | 개인 사용 목적, 클라우드 불필요 | — Pending |
 | Jetpack Compose UI | 최신 Android UI 표준, 빠른 개발 | — Pending |
+| Hilt 2.59.2 사용 (2.57.1 계획) | AGP 9.x에서 2.57.1의 BaseExtension API 제거됨 | ✓ Good |
+| Gradle 9.4.1 사용 (8.x 계획) | Java 25 환경 — Gradle 8.x는 Java 24까지만 지원 | ✓ Good |
+| CardTagCrossRef에 tagId 인덱스 추가 | Room KSP 경고: 인덱스 없으면 풀 테이블 스캔 발생 | ✓ Good |
 
 ## Evolution
 
@@ -75,4 +78,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-03-24 after initialization*
+*Last updated: 2026-03-24 after Phase 1: Foundation complete*
