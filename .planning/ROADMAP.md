@@ -42,7 +42,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 Plans:
 - [x] 01-01-PLAN.md — Gradle setup: Compose BOM, KSP, Room, Hilt, CameraX, ML Kit, Navigation, Coil dependencies configured in build.gradle.kts
 - [x] 01-02-PLAN.md — Room schema: CardEntity, TagEntity, CardTagCrossRef, CardWithTags POJO, CardDao, TagDao, AppDatabase with schema export enabled
-- [ ] 01-03-PLAN.md — Hilt modules: DatabaseModule, StorageModule, OcrModule, RepositoryModule; repository interfaces and implementations; all bindings wired
+- [x] 01-03-PLAN.md — Hilt modules: DatabaseModule, StorageModule, OcrModule, RepositoryModule; repository interfaces and implementations; all bindings wired
 - [x] 01-04-PLAN.md — Navigation scaffold: theme, AppNavHost with all five screen stubs, type-safe routes via @Serializable objects, MainActivity with bottom nav
 **UI hint**: yes
 
