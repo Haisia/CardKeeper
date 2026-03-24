@@ -1,0 +1,33 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node \"C:/Users/choe/.claude/get-shit-done/bin/gsd-tools.cjs\" commit \"docs: initialize project\" --files .planning/PROJECT.md)",
+      "Bash(node \"C:/Users/choe/.claude/get-shit-done/bin/gsd-tools.cjs\" config-new-project '{\"\"mode\"\":\"\"yolo\"\",\"\"granularity\"\":\"\"standard\"\",\"\"parallelization\"\":true,\"\"commit_docs\"\":true,\"\"model_profile\"\":\"\"balanced\"\",\"\"workflow\"\":{\"\"research\"\":true,\"\"plan_check\"\":true,\"\"verifier\"\":true,\"\"nyquist_validation\"\":true}}')",
+      "Bash(node \"C:/Users/choe/.claude/get-shit-done/bin/gsd-tools.cjs\" commit \"chore: add project config\" --files .planning/config.json)",
+      "Bash(node \"C:/project/temp/.claude/get-shit-done/bin/gsd-tools.cjs\" commit \"docs: complete project research\" --files .planning/research/)",
+      "Bash(node \"C:/Users/choe/.claude/get-shit-done/bin/gsd-tools.cjs\" commit \"docs: define v1 requirements\" --files .planning/REQUIREMENTS.md)",
+      "Bash(node \"C:/Users/choe/.claude/get-shit-done/bin/gsd-tools.cjs\" commit \"docs: create roadmap and state\" --files .planning/ROADMAP.md .planning/STATE.md)",
+      "WebSearch",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(./gradlew :app:assembleDebug)",
+      "Bash(git -C /project/temp status)",
+      "Bash(git -C /project/temp log --oneline -5)",
+      "Bash(echo \"04_MISSING\" git log --oneline --grep=\"01-02\\\\|01-04\")",
+      "Bash(node \"C:/Users/choe/.claude/get-shit-done/bin/gsd-tools.cjs\" verify key-links .planning/phases/01-foundation/01-03-PLAN.md)",
+      "Bash(node \"C:/project/temp/.claude/get-shit-done/bin/gsd-tools.cjs\" state advance-plan)",
+      "Bash(node \"C:/project/temp/.claude/get-shit-done/bin/gsd-tools.cjs\" state update-progress)",
+      "Bash(node \"C:/project/temp/.claude/get-shit-done/bin/gsd-tools.cjs\" state add-decision --phase \"01-foundation\" --summary \"@Binds in abstract class RepositoryModule for interface-to-impl bindings; @Provides in object modules for Room/ML Kit framework objects\")",
+      "Bash(node \"C:/project/temp/.claude/get-shit-done/bin/gsd-tools.cjs\" state add-decision --phase \"01-foundation\" --summary \"Repository pattern with domain/data layer separation: interfaces in domain/repository, implementations in data/repository with @Inject constructors\")",
+      "Bash(node \"C:/project/temp/.claude/get-shit-done/bin/gsd-tools.cjs\" state record-session --stopped-at \"Completed 01-foundation-01-03-PLAN.md\")",
+      "Bash(node \"C:/project/temp/.claude/get-shit-done/bin/gsd-tools.cjs\" roadmap update-plan-progress \"01\")",
+      "Bash(echo \"MISSING\" git log --oneline --grep=\"01-03\")",
+      "Bash(git hook:*)",
+      "Bash(echo \"HOOK_RESULT: $?\")",
+      "Bash(node \"C:/Users/choe/.claude/get-shit-done/bin/gsd-tools.cjs\" phase complete \"1\")",
+      "Bash(node \"C:/Users/choe/.claude/get-shit-done/bin/gsd-tools.cjs\" commit \"docs\\(phase-1\\): complete phase execution\" --files .planning/ROADMAP.md .planning/STATE.md \".planning/phases/01-foundation/01-VERIFICATION.md\")",
+      "Bash(node \"C:/Users/choe/.claude/get-shit-done/bin/gsd-tools.cjs\" commit \"docs\\(phase-1\\): evolve PROJECT.md after phase completion\" --files .planning/PROJECT.md)",
+      "Bash(rtk git:*)"
+    ]
+  }
+}
