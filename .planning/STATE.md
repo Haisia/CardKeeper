@@ -2,9 +2,9 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: Ready to plan
-stopped_at: Completed 01-foundation-01-03-PLAN.md
-last_updated: "2026-03-24T13:08:55.377Z"
+status: Ready to execute
+stopped_at: Planned 02-camera-ocr (5 plans)
+last_updated: "2026-03-24T14:00:00.000Z"
 progress:
   total_phases: 4
   completed_phases: 1
@@ -19,12 +19,12 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-24)
 
 **Core value:** 카메라 한 번으로 명함을 디지털화하고, 즉시 찾아서 쓸 수 있어야 한다.
-**Current focus:** Phase 01 — foundation
+**Current focus:** Phase 02 — camera + OCR
 
 ## Current Position
 
 Phase: 2
-Plan: Not started
+Plan: Ready to execute (5 plans written)
 
 ## Performance Metrics
 
@@ -74,9 +74,9 @@ None yet.
 
 ### Blockers/Concerns
 
-- [Phase 2]: Korean bounding-box parsing heuristics are not well-documented for business card
-  layouts. Plan a research spike at Phase 2 start: test ML Kit against real Korean card images
-  before finalizing ParseOcrResultUseCase algorithm.
+- [Phase 2]: Korean bounding-box parsing heuristics resolved in 02-03-PLAN.md. ParseOcrResultUseCase
+  uses 4-pass heuristic (regex → label-value → positional → confidence). Executor should run unit
+  tests against real OCR output and tune COMPANY_KEYWORDS/TITLE_KEYWORDS as needed.
 
 - [Phase 1]: KSP (2.3.20-1.0.31), ML Kit (16.0.1), Coil 3 (3.1.0), coroutines (1.10.1) versions
   are MEDIUM confidence — verify against GitHub/Maven release pages before writing first
