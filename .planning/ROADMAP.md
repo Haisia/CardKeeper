@@ -20,7 +20,7 @@ layer on top.
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [ ] **Phase 1: Foundation** - Android project scaffold with Room DB, Hilt DI, and Navigation stub wired end-to-end
+- [x] **Phase 1: Foundation** - Android project scaffold with Room DB, Hilt DI, and Navigation stub wired end-to-end (completed 2026-03-24)
 - [ ] **Phase 2: Camera + OCR** - Full scan flow — camera preview, ML Kit OCR, field parsing, manual correction, save card with image
 - [ ] **Phase 3: CRUD + Tags + Search** - Card list/detail, real-time search, edit/delete, per-card memo, tag creation/assignment/filter
 - [ ] **Phase 4: Export + Polish** - Contacts export via Intent, permission revocation handling, empty states, final UX polish
@@ -110,7 +110,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation | 3/4 | In Progress|  |
+| 1. Foundation | 3/4 | Complete    | 2026-03-24 |
 | 2. Camera + OCR | 0/5 | Not started | - |
 | 3. CRUD + Tags + Search | 0/5 | Not started | - |
 | 4. Export + Polish | 0/3 | Not started | - |
