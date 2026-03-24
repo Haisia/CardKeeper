@@ -2,16 +2,14 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: planning
-stopped_at: Phase 1 UI-SPEC approved
-last_updated: "2026-03-24T12:12:46.519Z"
-last_activity: 2026-03-24 — Roadmap created; all 16 v1 requirements mapped across 4 phases
+status: Ready to execute
+stopped_at: Completed 01-foundation-01-01-PLAN.md
+last_updated: "2026-03-24T12:46:09.246Z"
 progress:
   total_phases: 4
   completed_phases: 0
-  total_plans: 0
-  completed_plans: 0
-  percent: 0
+  total_plans: 4
+  completed_plans: 1
 ---
 
 # Project State
@@ -21,16 +19,12 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-24)
 
 **Core value:** 카메라 한 번으로 명함을 디지털화하고, 즉시 찾아서 쓸 수 있어야 한다.
-**Current focus:** Phase 1 — Foundation
+**Current focus:** Phase 01 — foundation
 
 ## Current Position
 
-Phase: 1 of 4 (Foundation)
-Plan: 0 of 4 in current phase
-Status: Ready to plan
-Last activity: 2026-03-24 — Roadmap created; all 16 v1 requirements mapped across 4 phases
-
-Progress: [░░░░░░░░░░] 0%
+Phase: 01 (foundation) — EXECUTING
+Plan: 2 of 4
 
 ## Performance Metrics
 
@@ -52,6 +46,7 @@ Progress: [░░░░░░░░░░] 0%
 - Trend: —
 
 *Updated after each plan completion*
+| Phase 01-foundation P01 | 9min | 1 tasks | 11 files |
 
 ## Accumulated Context
 
@@ -64,6 +59,9 @@ Recent decisions affecting current work:
 - [Init]: Intent-based Contacts export — no WRITE_CONTACTS permission needed, lower risk
 - [Init]: LIKE-based search (not FTS) — Korean text compatibility for v1
 - [Init]: Room schema export enabled from day one — prevents migration pain later
+- [Phase 01-foundation]: Gradle 9.4.1 (not 8.12): Java 25 (Corretto) on machine; Gradle 8.x max is Java 24; 9.4.1 supports Java 26
+- [Phase 01-foundation]: Hilt 2.59.2 (not 2.57.1): BaseExtension removed in AGP 9.x; 2.59.2 uses new AndroidComponentsExtension API
+- [Phase 01-foundation]: kotlin.android plugin removed from app module: AGP 9.0+ has built-in Kotlin; applying it causes hard failure
 
 ### Pending Todos
 
@@ -81,6 +79,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-24T12:12:46.516Z
-Stopped at: Phase 1 UI-SPEC approved
-Resume file: .planning/phases/01-foundation/01-UI-SPEC.md
+Last session: 2026-03-24T12:46:09.243Z
+Stopped at: Completed 01-foundation-01-01-PLAN.md
+Resume file: None
