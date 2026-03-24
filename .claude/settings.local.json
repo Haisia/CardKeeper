@@ -27,7 +27,8 @@
       "Bash(node \"C:/Users/choe/.claude/get-shit-done/bin/gsd-tools.cjs\" phase complete \"1\")",
       "Bash(node \"C:/Users/choe/.claude/get-shit-done/bin/gsd-tools.cjs\" commit \"docs\\(phase-1\\): complete phase execution\" --files .planning/ROADMAP.md .planning/STATE.md \".planning/phases/01-foundation/01-VERIFICATION.md\")",
       "Bash(node \"C:/Users/choe/.claude/get-shit-done/bin/gsd-tools.cjs\" commit \"docs\\(phase-1\\): evolve PROJECT.md after phase completion\" --files .planning/PROJECT.md)",
-      "Bash(rtk git:*)"
+      "Bash(rtk git:*)",
+      "Bash(rtk ls:*)"
     ]
   }
 }
