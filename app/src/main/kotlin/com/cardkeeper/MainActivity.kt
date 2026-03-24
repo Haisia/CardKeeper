@@ -16,11 +16,13 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavDestination.Companion.hasRoute
+import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.cardkeeper.ui.navigation.AppNavHost
 import com.cardkeeper.ui.navigation.CardListRoute
-import com.cardkeeper.ui.navigation.ScanRoute
+import com.cardkeeper.ui.navigation.ScanFlowRoute
 import com.cardkeeper.ui.navigation.TagManagerRoute
 import com.cardkeeper.ui.theme.CardKeeperTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -49,9 +51,11 @@ class MainActivity : ComponentActivity() {
                                 label = { Text("Cards") }
                             )
                             NavigationBarItem(
-                                selected = currentRoute == ScanRoute::class.qualifiedName,
+                                selected = navBackStackEntry?.destination?.hierarchy?.any {
+                                    it.hasRoute<ScanFlowRoute>()
+                                } == true,
                                 onClick = {
-                                    navController.navigate(ScanRoute) {
+                                    navController.navigate(ScanFlowRoute) {
                                         popUpTo(CardListRoute)
                                     }
                                 },
