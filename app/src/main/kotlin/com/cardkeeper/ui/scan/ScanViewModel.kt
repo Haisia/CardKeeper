@@ -40,4 +40,43 @@ class ScanViewModel @Inject constructor() : ViewModel() {
         _scanState.value = ScanState.Idle
         tempImagePath = null
     }
+
+    /**
+     * Copy a gallery image URI to a temp file in cacheDir.
+     *
+     * On success, calls [onReady] with the absolute path of the temp file.
+     * On error, calls [onError] with a description message.
+     *
+     * The content is read via ContentResolver — works for both content:// and file:// URIs
+     * returned by ActivityResultContracts.GetContent.
+     */
+    fun processGalleryImage(
+        context: android.content.Context,
+        uri: android.net.Uri,
+        onReady: (String) -> Unit,
+        onError: (String) -> Unit = {}
+    ) {
+        _scanState.value = ScanState.Capturing
+        try {
+            val tempFile = java.io.File(
+                context.cacheDir,
+                "temp_gallery_${System.currentTimeMillis()}.jpg"
+            )
+            context.contentResolver.openInputStream(uri)?.use { input ->
+                tempFile.outputStream().use { output ->
+                    input.copyTo(output)
+                }
+            } ?: run {
+                _scanState.value = ScanState.Error("Could not open gallery image")
+                onError("Could not open gallery image")
+                return
+            }
+            tempImagePath = tempFile.absolutePath
+            _scanState.value = ScanState.Idle
+            onReady(tempFile.absolutePath)
+        } catch (e: Exception) {
+            _scanState.value = ScanState.Error(e.message ?: "Gallery import failed")
+            onError(e.message ?: "Gallery import failed")
+        }
+    }
 }
