@@ -37,13 +37,13 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. Hilt modules are wired end-to-end: a ViewModel can receive an injected repository without runtime errors
   4. Navigation graph contains stubs for all five screens (CardList, CardDetail, Scan, OcrReview, TagManager) and routes between them without crashes
   5. fallbackToDestructiveMigration is gated on BuildConfig.DEBUG only; relative image paths are the established pattern in CardEntity from day one
-**Plans**: TBD
+**Plans**: 4 plans
 
 Plans:
-- [ ] 01-01: Gradle setup — Compose BOM, KSP, Room, Hilt, CameraX, ML Kit, Navigation, Coil dependencies configured in build.gradle.kts
-- [ ] 01-02: Room schema — CardEntity, TagEntity, CardTagCrossRef, CardWithTags POJO, CardDao, TagDao, AppDatabase with schema export enabled
-- [ ] 01-03: Hilt modules — DatabaseModule, StorageModule, OcrModule, RepositoryModule; Application class annotated; all repositories bound
-- [ ] 01-04: Navigation scaffold — AppNavHost with all five screen stubs, type-safe routes via @Serializable objects, MainActivity wired
+- [ ] 01-01-PLAN.md — Gradle setup: Compose BOM, KSP, Room, Hilt, CameraX, ML Kit, Navigation, Coil dependencies configured in build.gradle.kts
+- [ ] 01-02-PLAN.md — Room schema: CardEntity, TagEntity, CardTagCrossRef, CardWithTags POJO, CardDao, TagDao, AppDatabase with schema export enabled
+- [ ] 01-03-PLAN.md — Hilt modules: DatabaseModule, StorageModule, OcrModule, RepositoryModule; repository interfaces and implementations; all bindings wired
+- [ ] 01-04-PLAN.md — Navigation scaffold: theme, AppNavHost with all five screen stubs, type-safe routes via @Serializable objects, MainActivity with bottom nav
 **UI hint**: yes
 
 ### Phase 2: Camera + OCR
