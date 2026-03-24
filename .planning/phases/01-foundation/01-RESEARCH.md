@@ -22,7 +22,7 @@ choices remain. One note: several version numbers in `.planning/research/STACK.m
 serialization versioning assumption was wrong). Verified versions are documented below and must
 be used in `build.gradle.kts` in 01-01. The Room Gradle Plugin (`id("androidx.room")`) is now
 the recommended approach for schema export and replaces the old `ksp { arg("room.schemaLocation",
-...) }` pattern — it works with AGP 8.4+ which this project already requires (AGP 9.1.0).
+...) }` pattern — it works with AGP 8.4+ which this project already requires (AGP 9.0.1).
 
 Navigation Compose 2.9.7 type-safe routes are now the stable, preferred API. For no-argument
 screens, use `@Serializable object ScreenName`. For screens with arguments, use `@Serializable
@@ -61,7 +61,7 @@ from the project-level research files and ROADMAP.md success criteria.
 | Library | Version | Purpose | Confidence |
 |---------|---------|---------|------------|
 | Kotlin | 2.3.20 | Primary language | HIGH |
-| AGP | 9.1.0 | Build system | HIGH |
+| AGP | 9.0.1 | Build system | HIGH |
 | KSP | 2.3.6 | Code generation (Room + Hilt) — new versioning, NOT `2.3.20-1.0.31` | HIGH — verified Maven Central |
 | Compose BOM | 2026.03.00 | Pins all Compose library versions | HIGH |
 | Material3 | (via BOM) | UI components | HIGH |
@@ -98,7 +98,7 @@ from the project-level research files and ROADMAP.md success criteria.
 
 ```kotlin
 plugins {
-    id("com.android.application") version "9.1.0" apply false
+    id("com.android.application") version "9.0.1" apply false
     id("org.jetbrains.kotlin.android") version "2.3.20" apply false
     id("com.google.devtools.ksp") version "2.3.6" apply false
     id("com.google.dagger.hilt.android") version "2.57.1" apply false
@@ -464,7 +464,7 @@ class CardDetailViewModel @Inject constructor(
 
 **What:** The Room Gradle Plugin (`id("androidx.room")`) introduced in Room 2.6.0 is the
 recommended approach for Room 2.8.4. It replaces the older `ksp { arg("room.schemaLocation", ...) }`
-pattern and provides reproducible, cacheable builds. Requires AGP 8.4+ (this project uses 9.1.0).
+pattern and provides reproducible, cacheable builds. Requires AGP 8.4+ (this project uses 9.0.1).
 
 ```kotlin
 // In app/build.gradle.kts — replaces ksp { arg("room.schemaLocation", ...) }

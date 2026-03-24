@@ -13,10 +13,10 @@
 | Technology | Version | Purpose | Why | Confidence |
 |------------|---------|---------|-----|------------|
 | Kotlin | 2.3.20 | Primary language | Official Android language; Compose requires Kotlin; 2.3.x is current stable (released March 2026) | HIGH |
-| Android Gradle Plugin (AGP) | 9.1.0 | Build system | Latest stable (March 2026); required for full API 36 support | HIGH |
+| Android Gradle Plugin (AGP) | 9.0.1 | Build system | Downgraded from 9.1.0 — Android Studio max supported version is 9.0.1; required for full API 36 support | HIGH |
 | KSP (Kotlin Symbol Processing) | 2.3.20-1.0.31 | Code generation processor | Replaces KAPT for Room + Hilt; faster incremental builds; required for Room 2.7+ KMP mode | MEDIUM — verify KSP release matching Kotlin 2.3.20 at github.com/google/ksp/releases |
 | Min SDK | API 26 (Android 8.0) | Target floor | Project constraint; covers ~97% of active devices as of 2025 | HIGH |
-| Target/Compile SDK | API 36 | Target ceiling | Match AGP 9.1.0 default; required for Play Store compliance | HIGH |
+| Target/Compile SDK | API 36 | Target ceiling | Match AGP 9.0.1 default; required for Play Store compliance | HIGH |
 
 ### UI Framework
 
@@ -136,7 +136,7 @@ No library needed. The platform Intent approach requires no permissions and dele
 ```kotlin
 // build.gradle.kts (project level)
 plugins {
-    id("com.android.application") version "9.1.0" apply false
+    id("com.android.application") version "9.0.1" apply false
     id("org.jetbrains.kotlin.android") version "2.3.20" apply false
     id("com.google.devtools.ksp") version "2.3.20-1.0.31" apply false  // verify version
     id("com.google.dagger.hilt.android") version "2.57.1" apply false

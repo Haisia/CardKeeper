@@ -43,7 +43,7 @@ human_verification:
 | Artifact | Expected | Status | Details |
 |----------|----------|--------|---------|
 | `settings.gradle.kts` | Project name and plugin management | VERIFIED | Contains `rootProject.name = "CardKeeper"` and `include(":app")` |
-| `build.gradle.kts` | Root plugin declarations | VERIFIED | AGP 9.1.0, KSP 2.3.6, Hilt 2.59.2, Room 2.8.4, serialization, compose all declared |
+| `build.gradle.kts` | Root plugin declarations | VERIFIED | AGP 9.0.1, KSP 2.3.6, Hilt 2.59.2, Room 2.8.4, serialization, compose all declared |
 | `app/build.gradle.kts` | All app dependencies, Room Gradle Plugin, buildConfig enabled | VERIFIED | `room { schemaDirectory(...) }`, `buildConfig = true`, compileSdk=36, minSdk=26, ksp() for Room and Hilt, no kapt |
 | `app/src/main/AndroidManifest.xml` | Application entry point with Hilt application class | VERIFIED | `android:name=".CardKeeperApplication"`, CAMERA permission, MainActivity as launcher |
 | `app/src/main/kotlin/com/cardkeeper/CardKeeperApplication.kt` | @HiltAndroidApp annotated Application class | VERIFIED | `@HiltAndroidApp class CardKeeperApplication : Application()` |

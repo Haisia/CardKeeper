@@ -24,7 +24,7 @@ The Jetpack stack is mature and well-matched to this project. The BOM approach (
 Several versions carry MEDIUM confidence and should be verified against their respective release pages before the first build: KSP (`2.3.20-1.0.31`), ML Kit text-recognition (`16.0.1`), Coil 3 (`3.1.0`), and kotlinx-coroutines (`1.10.1`). All core Jetpack libraries (Compose BOM, Room 2.8.4, CameraX 1.5.3, Navigation 2.9.7, Hilt 2.57.1, Lifecycle 2.10.0) are HIGH confidence via official release pages.
 
 **Core technologies:**
-- Kotlin 2.3.20 + AGP 9.1.0 — language and build system; compile/target SDK 36, min SDK 26
+- Kotlin 2.3.20 + AGP 9.0.1 — language and build system; compile/target SDK 36, min SDK 26
 - Compose BOM 2026.03.00 + Material3 — UI framework; replaces XML Views entirely
 - KSP 2.3.20-1.0.31 — code generation for Room and Hilt; KAPT is deprecated, do not use it
 - Room 2.8.4 — local SQLite ORM with Flow-based reactive queries; KSP code generation path
