@@ -39,6 +39,10 @@ fun AppNavHost(navController: NavHostController) {
                         viewModel.setTempImagePath(imagePath)
                         navController.navigate(OcrReviewRoute)
                     },
+                    onGalleryImageReady = { imagePath ->
+                        viewModel.setTempImagePath(imagePath)
+                        navController.navigate(OcrReviewRoute)
+                    },
                     onBack = { navController.popBackStack() }
                 )
             }

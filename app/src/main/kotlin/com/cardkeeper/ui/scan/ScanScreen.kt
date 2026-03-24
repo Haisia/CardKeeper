@@ -52,8 +52,8 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 fun ScanScreen(
     viewModel: ScanViewModel,
     onPhotoReady: (String) -> Unit,
-    onBack: () -> Unit,
-    onGalleryClick: () -> Unit = {}  // wired in 02-04; stub default for now
+    onGalleryImageReady: (String) -> Unit,
+    onBack: () -> Unit
 ) {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -70,6 +70,17 @@ fun ScanScreen(
         contract = ActivityResultContracts.RequestPermission()
     ) { granted ->
         hasCameraPermission = granted
+    }
+
+    val galleryLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) { uri: android.net.Uri? ->
+        uri ?: return@rememberLauncherForActivityResult
+        viewModel.processGalleryImage(
+            context = context,
+            uri = uri,
+            onReady = onGalleryImageReady
+        )
     }
 
     LaunchedEffect(Unit) {
@@ -169,7 +180,7 @@ fun ScanScreen(
         ) {
             // Gallery button — bottom left
             IconButton(
-                onClick = onGalleryClick,
+                onClick = { galleryLauncher.launch("image/*") },
                 modifier = Modifier
                     .align(Alignment.BottomStart)
                     .padding(start = 32.dp)
