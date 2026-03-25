@@ -445,6 +445,8 @@ private fun EditMode(
     onCancel: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val context = LocalContext.current
+    val absolutePath = card.card.imagePath?.let { java.io.File(context.filesDir, it).absolutePath }
     var name by remember(card.card.id) { mutableStateOf(card.card.name) }
     var company by remember(card.card.id) { mutableStateOf(card.card.company) }
     var jobTitle by remember(card.card.id) { mutableStateOf(card.card.jobTitle) }
@@ -463,6 +465,24 @@ private fun EditMode(
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
+        if (absolutePath != null) {
+            Surface(
+                shape = RoundedCornerShape(16.dp),
+                color = MaterialTheme.colorScheme.surfaceContainer,
+                tonalElevation = 1.dp
+            ) {
+                AsyncImage(
+                    model = absolutePath,
+                    contentDescription = "Card image",
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(180.dp)
+                        .clip(RoundedCornerShape(16.dp)),
+                    contentScale = ContentScale.Fit
+                )
+            }
+        }
+
         EditField(label = "이름 (Name)", value = name, onValueChange = { name = it })
         EditField(label = "회사 (Company)", value = company, onValueChange = { company = it })
         EditField(label = "직책 (Job Title)", value = jobTitle, onValueChange = { jobTitle = it })
