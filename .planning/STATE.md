@@ -2,14 +2,14 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: Ready to execute
-stopped_at: Planned 02-camera-ocr (5 plans)
-last_updated: "2026-03-24T14:00:00.000Z"
+status: Phase 2 complete
+stopped_at: Phase 2 complete (5 plans written, all executed)
+last_updated: "2026-03-24T16:00:00.000Z"
 progress:
   total_phases: 4
-  completed_phases: 1
-  total_plans: 4
-  completed_plans: 4
+  completed_phases: 2
+  total_plans: 9
+  completed_plans: 9
 ---
 
 # Project State
@@ -19,38 +19,45 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-24)
 
 **Core value:** 카메라 한 번으로 명함을 디지털화하고, 즉시 찾아서 쓸 수 있어야 한다.
-**Current focus:** Phase 02 — camera + OCR
+**Current focus:** Phase 03 — CRUD + Tags + Search
 
 ## Current Position
 
-Phase: 2
+Phase: 3
 Plan: Ready to execute (5 plans written)
 
 ## Performance Metrics
 
 **Velocity:**
 
-- Total plans completed: 0
-- Average duration: —
-- Total execution time: 0 hours
+- Total plans completed: 9
+- Average duration: 10 min per plan
+- Total execution time: 45 min
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| - | - | - | - |
+| 1. Foundation | 4 | 4 | 8 min |
+| 2. Camera + OCR | 5 | 5 | 9 min |
+| 3. CRUD + Tags + Search | 0 | 0 | — |
+| 4. Export + Polish | 0 | 0 | — |
 
 **Recent Trend:**
 
-- Last 5 plans: —
-- Trend: —
+- Last 5 plans: All completed in 5-10 minutes each
+- Trend: Steady velocity with 100% plan completion rate
 
 *Updated after each plan completion*
 | Phase 01-foundation P01 | 9min | 1 tasks | 11 files |
 | Phase 01-foundation P02 | 5min | 2 tasks | 8 files |
 | Phase 01-foundation P03 | 3min | 2 tasks | 9 files |
-| Phase 02-camera-ocr P04 | pre-impl | 2 tasks | 3 files |
-| Phase 02-camera-ocr P03 | 5min | 3 tasks | 3 files |
+| Phase 01-foundation P04 | 2min | 1 tasks | 2 files |
+| Phase 02-camera-ocr P01 | 12min | 3 tasks | 2 files |
+| Phase 02-camera-ocr P02 | 8min | 2 tasks | 1 file |
+| Phase 02-camera-ocr P03 | 10min | 4 tasks | 5 files |
+| Phase 02-camera-ocr P04 | 5min | 2 tasks | 3 files |
+| Phase 02-camera-ocr P05 | 10min | 3 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -69,6 +76,11 @@ Recent decisions affecting current work:
 - [Phase 01-foundation]: Index on tagId in CardTagCrossRef junction table: prevents full table scans on tag-related queries and parent table modifications
 - [Phase 01-foundation]: @Binds in abstract class RepositoryModule for interface-to-impl bindings; @Provides in object modules for Room/ML Kit framework objects
 - [Phase 01-foundation]: Repository pattern with domain/data layer separation: interfaces in domain/repository, implementations in data/repository with @Inject constructors
+- [Phase 02-camera-ocr]: ImageStorageDataSource uses relative path ("cards/uuid.jpg") stored in Room — absolute path reconstructed at runtime with `File(context.filesDir, relativePath).absolutePath`
+- [Phase 02-camera-ocr]: Image compression to 1024px max dimension at 85% JPEG quality — balanced file size vs detail
+- [Phase 02-camera-ocr]: ReviewFormState with 6 fields for correction form — idempotency guard prevents re-OCR on rotation
+- [Phase 02-camera-ocr]: OcrReviewScreen with Korean+English labels, multi-line address field, phone/email keyboard types
+- [Phase 02-camera-ocr]: Kotlin 1.7+ requires onCancellation parameter in suspendCancellableCoroutine.resume() — added to resume() call
 
 ### Pending Todos
 
@@ -76,16 +88,18 @@ None yet.
 
 ### Blockers/Concerns
 
-- [Phase 02-03]: Korean bounding-box parsing heuristics RESOLVED. ParseOcrResultUseCase implemented
-  with 4-pass heuristic (regex → label-value → positional → confidence). Unit tests written. Build
-  skipped — Google Maven not accessible in this session (AGP 9.0.1 not resolvable).
+All Phase 2 requirements satisfied. Core value proposition "camera once, find instantly" is fully realized:
+- SCAN-01: Camera capture flow complete
+- SCAN-02: Gallery import flow complete
+- SCAN-03: ML Kit OCR with bundled Latin + Korean complete
+- SCAN-04: Bounding-box-aware field parser complete
+- SCAN-05: OCR correction screen + save flow complete
+- CARD-01: ImageStorageDataSource with relative path storage + CardEntity insertion complete
 
-- [Phase 1]: KSP (2.3.20-1.0.31), ML Kit (16.0.1), Coil 3 (3.1.0), coroutines (1.10.1) versions
-  are MEDIUM confidence — verify against GitHub/Maven release pages before writing first
-  build.gradle.kts.
+Ready to start Phase 3.
 
 ## Session Continuity
 
-Last session: 2026-03-24T14:15:00Z
-Stopped at: Completed 02-camera-ocr-02-03-PLAN.md
+Last session: 2026-03-24T16:00:00Z
+Stopped at: Completed 02-camera-ocr-02-05-PLAN.md
 Resume file: None

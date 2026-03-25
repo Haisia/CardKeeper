@@ -49,7 +49,10 @@ class OcrDataSource @Inject constructor(
                             )
                         }
                     }
-                    if (continuation.isActive) continuation.resume(blocks)
+                    if (continuation.isActive) continuation.resume(blocks) { cause ->
+                        // TextRecognizer tasks cannot be individually cancelled in ML Kit;
+                        // the continuation guard above prevents delivering results after cancellation
+                    }
                 }
                 .addOnFailureListener { exception ->
                     if (continuation.isActive) continuation.resumeWithException(exception)
