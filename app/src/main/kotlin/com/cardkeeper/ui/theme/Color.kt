@@ -2,22 +2,21 @@ package com.cardkeeper.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-// Primary (accent 10%)
-val Blue40 = Color(0xFF1A73E8)   // Light mode primary
-val Blue80 = Color(0xFF8AB4F8)   // Dark mode primary
+val Primary = Color(0xFF7B9EFF)
+val PrimaryContainer = Color(0xFF1E3A5F)
+val OnPrimaryContainer = Color(0xFFD6E4FF)
 
-// Error (destructive)
-val Error40 = Color(0xFFB3261E)  // Light mode error
-val Error80 = Color(0xFFF2B8B5) // Dark mode error
+val Surface = Color(0xFF0F1115)
+val SurfaceContainer = Color(0xFF1A1D24)
+val SurfaceContainerHigh = Color(0xFF24282F)
+val SurfaceContainerHighest = Color(0xFF2E333B)
 
-// Surface colors
-val SurfaceLight = Color(0xFFFFFBFE)
-val SurfaceDark = Color(0xFF1C1B1F)
-val SurfaceVariantLight = Color(0xFFE7E0EC)
-val SurfaceVariantDark = Color(0xFF3E3D42)
+val OnSurface = Color(0xFFE2E4EA)
+val OnSurfaceVariant = Color(0xFF8B8F99)
 
-// On-surface colors
-val OnSurfaceLight = Color(0xFF1C1B1F)
-val OnSurfaceDark = Color(0xFFE6E1E5)
-val OnPrimaryLight = Color(0xFFFFFFFF)
-val OnPrimaryDark = Color(0xFF003A75)
+val Outline = Color(0xFF3E4250)
+val OutlineVariant = Color(0xFF2C2F38)
+
+val Error = Color(0xFFFF6B6B)
+val ErrorContainer = Color(0xFF3D1515)
+val OnErrorContainer = Color(0xFFFFDAD6)

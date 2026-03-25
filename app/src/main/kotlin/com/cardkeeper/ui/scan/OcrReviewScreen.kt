@@ -8,7 +8,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -18,12 +20,15 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -45,12 +50,10 @@ fun OcrReviewScreen(
     val formState by viewModel.formState.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
 
-    // Trigger OCR load when first composed
     LaunchedEffect(Unit) {
         viewModel.loadOcrResult()
     }
 
-    // Navigate away when save completes
     LaunchedEffect(scanState) {
         if (scanState == ScanState.Saved) {
             viewModel.resetState()
@@ -58,7 +61,6 @@ fun OcrReviewScreen(
         }
     }
 
-    // Show error in snackbar
     LaunchedEffect(scanState) {
         if (scanState is ScanState.Error) {
             snackbarHostState.showSnackbar((scanState as ScanState.Error).message)
@@ -76,7 +78,10 @@ fun OcrReviewScreen(
                             contentDescription = "Back"
                         )
                     }
-                }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.surface
+                )
             )
         },
         snackbarHost = { SnackbarHost(snackbarHostState) }
@@ -87,7 +92,6 @@ fun OcrReviewScreen(
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
-            // Form content
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -135,11 +139,12 @@ fun OcrReviewScreen(
                 Button(
                     onClick = { viewModel.saveCard() },
                     modifier = Modifier.fillMaxWidth(),
-                    enabled = scanState != ScanState.Saving && scanState != ScanState.LoadingOcr
+                    enabled = scanState != ScanState.Saving && scanState != ScanState.LoadingOcr,
+                    shape = RoundedCornerShape(12.dp)
                 ) {
                     if (scanState == ScanState.Saving) {
                         CircularProgressIndicator(
-                            modifier = Modifier.height(18.dp),
+                            modifier = Modifier.size(18.dp),
                             strokeWidth = 2.dp
                         )
                     } else {
@@ -150,7 +155,6 @@ fun OcrReviewScreen(
                 Spacer(modifier = Modifier.height(32.dp))
             }
 
-            // Loading overlay while OCR is running
             if (scanState == ScanState.LoadingOcr) {
                 Box(
                     modifier = Modifier.fillMaxSize(),
@@ -160,8 +164,11 @@ fun OcrReviewScreen(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
-                        CircularProgressIndicator()
-                        Text("텍스트 인식 중...")
+                        CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
+                        Text(
+                            "텍스트 인식 중...",
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
                     }
                 }
             }
@@ -185,6 +192,13 @@ private fun ReviewTextField(
         modifier = Modifier.fillMaxWidth(),
         singleLine = singleLine,
         minLines = minLines,
-        keyboardOptions = KeyboardOptions(keyboardType = keyboardType)
+        keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
+        shape = RoundedCornerShape(12.dp),
+        colors = OutlinedTextFieldDefaults.colors(
+            unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant,
+            unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainer,
+            focusedBorderColor = MaterialTheme.colorScheme.primary,
+            focusedContainerColor = MaterialTheme.colorScheme.surfaceContainer
+        )
     )
 }

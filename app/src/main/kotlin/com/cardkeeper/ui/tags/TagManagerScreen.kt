@@ -12,22 +12,25 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -58,9 +61,17 @@ fun TagManagerScreen(onBack: () -> Unit) {
                     value = newTagName,
                     onValueChange = { newTagName = it },
                     label = { Text("Tag name") },
-                    singleLine = true
+                    singleLine = true,
+                    shape = RoundedCornerShape(12.dp),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant,
+                        unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainer,
+                        focusedBorderColor = MaterialTheme.colorScheme.primary,
+                        focusedContainerColor = MaterialTheme.colorScheme.surfaceContainer
+                    )
                 )
             },
+            containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
             confirmButton = {
                 TextButton(
                     onClick = {
@@ -81,6 +92,7 @@ fun TagManagerScreen(onBack: () -> Unit) {
             onDismissRequest = { tagToDelete = null },
             title = { Text("Delete Tag?") },
             text = { Text("Tag \"${tag.name}\" will be removed from all cards.") },
+            containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
             confirmButton = {
                 TextButton(onClick = {
                     viewModel.deleteTag(tag)
@@ -108,7 +120,10 @@ fun TagManagerScreen(onBack: () -> Unit) {
                     IconButton(onClick = { showAddDialog = true }) {
                         Icon(Icons.Rounded.Add, contentDescription = "Add tag")
                     }
-                }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.surface
+                )
             )
         }
     ) { innerPadding ->
@@ -134,22 +149,36 @@ fun TagManagerScreen(onBack: () -> Unit) {
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 items(tags, key = { it.id }) { tag ->
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 4.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween
+                    Surface(
+                        shape = RoundedCornerShape(12.dp),
+                        color = MaterialTheme.colorScheme.surfaceContainer,
+                        tonalElevation = 1.dp
                     ) {
-                        FilledTonalButton(onClick = {}, enabled = false) {
-                            Text(tag.name)
-                        }
-                        IconButton(onClick = { tagToDelete = tag }) {
-                            Icon(
-                                Icons.Rounded.Delete,
-                                contentDescription = "Delete tag",
-                                tint = MaterialTheme.colorScheme.error
-                            )
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp, vertical = 4.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Surface(
+                                shape = RoundedCornerShape(8.dp),
+                                color = MaterialTheme.colorScheme.primaryContainer
+                            ) {
+                                Text(
+                                    text = tag.name,
+                                    style = MaterialTheme.typography.labelLarge,
+                                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                    modifier = Modifier.padding(horizontal = 14.dp, vertical = 8.dp)
+                                )
+                            }
+                            IconButton(onClick = { tagToDelete = tag }) {
+                                Icon(
+                                    Icons.Rounded.Delete,
+                                    contentDescription = "Delete tag",
+                                    tint = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+                            }
                         }
                     }
                 }

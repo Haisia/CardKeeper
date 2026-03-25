@@ -20,14 +20,16 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
+import androidx.compose.material.icons.rounded.Call
 import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material.icons.rounded.Edit
+import androidx.compose.material.icons.rounded.Mail
 import androidx.compose.material.icons.rounded.Share
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FilledTonalButton
+import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -36,9 +38,11 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -99,6 +103,7 @@ fun CardDetailScreen(
             onDismissRequest = { viewModel.setShowDeleteDialog(false) },
             title = { Text("Delete Card?") },
             text = { Text("This action cannot be undone.") },
+            containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
             confirmButton = {
                 TextButton(onClick = { viewModel.deleteCard() }) {
                     Text("Delete", color = MaterialTheme.colorScheme.error)
@@ -157,7 +162,10 @@ fun CardDetailScreen(
                             )
                         }
                     }
-                }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.surface
+                )
             )
         },
         snackbarHost = { SnackbarHost(snackbarHostState) }
@@ -171,7 +179,7 @@ fun CardDetailScreen(
                     .padding(innerPadding),
                 contentAlignment = Alignment.Center
             ) {
-                CircularProgressIndicator()
+                CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
             }
         } else if (card == null) {
             Box(
@@ -194,11 +202,11 @@ fun CardDetailScreen(
                 modifier = Modifier.padding(innerPadding)
             )
         } else {
-                val absolutePath = card.card.imagePath?.let { java.io.File(context.filesDir, it).absolutePath }
-                ViewMode(
-                    card = card,
-                    imagePath = absolutePath,
-                    onImageClick = { fullscreenImagePath = absolutePath },
+            val absolutePath = card.card.imagePath?.let { java.io.File(context.filesDir, it).absolutePath }
+            ViewMode(
+                card = card,
+                imagePath = absolutePath,
+                onImageClick = { fullscreenImagePath = absolutePath },
                 modifier = Modifier.padding(innerPadding)
             )
         }
@@ -226,54 +234,147 @@ private fun ViewMode(
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        AsyncImage(
-            model = imagePath,
-            contentDescription = "Card image",
+        Surface(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(200.dp)
-                .clip(RoundedCornerShape(12.dp))
                 .clickable { onImageClick() },
-            contentScale = ContentScale.Fit
-        )
+            shape = RoundedCornerShape(16.dp),
+            color = MaterialTheme.colorScheme.surfaceContainer,
+            tonalElevation = 2.dp
+        ) {
+            AsyncImage(
+                model = imagePath,
+                contentDescription = "Card image",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(200.dp)
+                    .clip(RoundedCornerShape(16.dp)),
+                contentScale = ContentScale.Fit
+            )
+        }
 
-        DetailRow(label = "이름 (Name)", value = card.card.name)
-        DetailRow(label = "회사 (Company)", value = card.card.company)
-        DetailRow(label = "직책 (Job Title)", value = card.card.jobTitle)
-        DetailRow(label = "전화 (Phone)", value = formatPhoneNumber(card.card.phone))
-        DetailRow(label = "이메일 (Email)", value = card.card.email)
-        DetailRow(label = "주소 (Address)", value = card.card.address)
+        Surface(
+            shape = RoundedCornerShape(16.dp),
+            color = MaterialTheme.colorScheme.surfaceContainer,
+            tonalElevation = 1.dp
+        ) {
+            Column(modifier = Modifier.padding(16.dp)) {
+                Text(
+                    text = card.card.name,
+                    style = MaterialTheme.typography.titleLarge,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+                if (card.card.company.isNotBlank() || card.card.jobTitle.isNotBlank()) {
+                    Text(
+                        text = listOfNotNull(
+                            card.card.company.takeIf { it.isNotBlank() },
+                            card.card.jobTitle.takeIf { it.isNotBlank() }
+                        ).joinToString(" · "),
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.primary,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                InfoRow(
+                    icon = Icons.Rounded.Call,
+                    label = "전화 (Phone)",
+                    value = formatPhoneNumber(card.card.phone)
+                )
+                InfoRow(
+                    icon = Icons.Rounded.Mail,
+                    label = "이메일 (Email)",
+                    value = card.card.email
+                )
+                InfoRow(
+                    label = "주소 (Address)",
+                    value = card.card.address
+                )
+            }
+        }
 
         if (card.card.memo.isNotBlank()) {
-            Spacer(modifier = Modifier.height(4.dp))
-            Text(
-                text = "메모 (Memo)",
-                style = MaterialTheme.typography.labelLarge,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-            Text(
-                text = card.card.memo,
-                style = MaterialTheme.typography.bodyLarge
-            )
+            Surface(
+                shape = RoundedCornerShape(16.dp),
+                color = MaterialTheme.colorScheme.surfaceContainer,
+                tonalElevation = 1.dp
+            ) {
+                Column(modifier = Modifier.padding(16.dp)) {
+                    Text(
+                        text = "메모 (Memo)",
+                        style = MaterialTheme.typography.labelLarge,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(
+                        text = card.card.memo,
+                        style = MaterialTheme.typography.bodyLarge
+                    )
+                }
+            }
         }
 
         if (card.tags.isNotEmpty()) {
             Row(
-                modifier = Modifier.padding(top = 8.dp),
+                modifier = Modifier.padding(top = 4.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 card.tags.forEach { tag ->
-                    FilledTonalButton(
-                        onClick = {},
-                        enabled = false
+                    Surface(
+                        shape = RoundedCornerShape(8.dp),
+                        color = MaterialTheme.colorScheme.primaryContainer
                     ) {
-                        Text(tag.name)
+                        Text(
+                            text = tag.name,
+                            style = MaterialTheme.typography.labelMedium,
+                            color = MaterialTheme.colorScheme.onPrimaryContainer,
+                            modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp)
+                        )
                     }
                 }
             }
         }
 
         Spacer(modifier = Modifier.height(32.dp))
+    }
+}
+
+@Composable
+private fun InfoRow(
+    icon: androidx.compose.ui.graphics.vector.ImageVector? = null,
+    label: String,
+    value: String
+) {
+    Row(
+        modifier = Modifier.padding(vertical = 6.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        if (icon != null) {
+            Icon(
+                imageVector = icon,
+                contentDescription = null,
+                modifier = Modifier.size(18.dp),
+                tint = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+            Spacer(modifier = Modifier.width(10.dp))
+        }
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                text = label,
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+            Text(
+                text = value.ifEmpty { "-" },
+                style = MaterialTheme.typography.bodyLarge,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis
+            )
+        }
     }
 }
 
@@ -325,27 +426,6 @@ private fun formatPhoneNumber(phone: String): String {
         11 -> "${digits.substring(0, 3)}-${digits.substring(3, 7)}-${digits.substring(7)}"
         10 -> "${digits.substring(0, 3)}-${digits.substring(3, 6)}-${digits.substring(6)}"
         else -> phone
-    }
-}
-
-@Composable
-private fun DetailRow(label: String, value: String) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(12.dp)
-    ) {
-        Text(
-            text = label,
-            style = MaterialTheme.typography.labelLarge,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.width(120.dp)
-        )
-        Text(
-            text = value.ifEmpty { "-"},
-            style = MaterialTheme.typography.bodyLarge,
-            maxLines = 3,
-            overflow = TextOverflow.Ellipsis
-        )
     }
 }
 
@@ -408,17 +488,17 @@ private fun EditMode(
             ) {
                 availableTags.forEach { tag ->
                     val isSelected = tag.id in selectedTagIds
-                    FilledTonalButton(
+                    FilterChip(
+                        selected = isSelected,
                         onClick = {
                             selectedTagIds = if (isSelected) {
                                 selectedTagIds - tag.id
                             } else {
                                 selectedTagIds + tag.id
                             }
-                        }
-                    ) {
-                        Text(if (isSelected) "✓ ${tag.name}" else tag.name)
-                    }
+                        },
+                        label = { Text(tag.name) }
+                    )
                 }
             }
         }
@@ -432,14 +512,16 @@ private fun EditMode(
             OutlinedButton(
                 onClick = onCancel,
                 modifier = Modifier.weight(1f),
-                enabled = !isSaving
+                enabled = !isSaving,
+                shape = RoundedCornerShape(12.dp)
             ) {
                 Text("Cancel")
             }
             Button(
                 onClick = { onSave(CardEditData(name, company, jobTitle, phone, email, address, memo, selectedTagIds)) },
                 modifier = Modifier.weight(1f),
-                enabled = !isSaving
+                enabled = !isSaving,
+                shape = RoundedCornerShape(12.dp)
             ) {
                 if (isSaving) {
                     CircularProgressIndicator(
@@ -470,6 +552,13 @@ private fun EditField(
         label = { Text(label) },
         modifier = Modifier.fillMaxWidth(),
         singleLine = singleLine,
-        minLines = minLines
+        minLines = minLines,
+        shape = RoundedCornerShape(12.dp),
+        colors = androidx.compose.material3.OutlinedTextFieldDefaults.colors(
+            unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant,
+            unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainer,
+            focusedBorderColor = MaterialTheme.colorScheme.primary,
+            focusedContainerColor = MaterialTheme.colorScheme.surfaceContainer
+        )
     )
 }
