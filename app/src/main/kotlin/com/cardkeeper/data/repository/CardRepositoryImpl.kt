@@ -13,6 +13,8 @@ class CardRepositoryImpl @Inject constructor(
     override fun getAllCards(): Flow<List<CardWithTags>> = cardDao.getAllCardsWithTags()
     override fun getCardById(cardId: Long): Flow<CardWithTags?> = cardDao.getCardWithTagsById(cardId)
     override fun searchCards(query: String): Flow<List<CardWithTags>> = cardDao.searchCards("%$query%")
+    override fun getCardsByTags(tagIds: Collection<Long>): Flow<List<CardWithTags>> = cardDao.getCardsByTags(tagIds)
+    override fun searchCardsByTags(tagIds: Collection<Long>, query: String): Flow<List<CardWithTags>> = cardDao.searchCardsByTags(tagIds, "%$query%")
     override suspend fun insertCard(card: CardEntity): Long = cardDao.insertCard(card)
     override suspend fun updateCard(card: CardEntity) = cardDao.updateCard(card)
     override suspend fun deleteCard(card: CardEntity) = cardDao.deleteCard(card)

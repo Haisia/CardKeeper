@@ -189,8 +189,10 @@ fun CardDetailScreen(
                 modifier = Modifier.padding(innerPadding)
             )
         } else {
-            ViewMode(
-                card = card,
+                val absolutePath = card.card.imagePath?.let { java.io.File(context.filesDir, it).absolutePath }
+                ViewMode(
+                    card = card,
+                    imagePath = absolutePath,
                 modifier = Modifier.padding(innerPadding)
             )
         }
@@ -198,7 +200,7 @@ fun CardDetailScreen(
 }
 
 @Composable
-private fun ViewMode(card: CardWithTags, modifier: Modifier = Modifier) {
+private fun ViewMode(card: CardWithTags, imagePath: String?, modifier: Modifier = Modifier) {
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -207,7 +209,7 @@ private fun ViewMode(card: CardWithTags, modifier: Modifier = Modifier) {
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         AsyncImage(
-            model = card.card.imagePath,
+            model = imagePath,
             contentDescription = "Card image",
             modifier = Modifier
                 .fillMaxWidth()

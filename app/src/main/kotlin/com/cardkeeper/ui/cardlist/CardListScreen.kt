@@ -17,7 +17,7 @@ import androidx.compose.material.icons.rounded.CameraAlt
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FilledTonalButton
+import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -40,6 +40,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.compose.ui.platform.LocalContext
 import coil3.compose.AsyncImage
 import com.cardkeeper.data.db.CardWithTags
 import com.cardkeeper.data.db.TagEntity
@@ -53,6 +54,7 @@ fun CardListScreen(
 ) {
     val viewModel: CardListViewModel = hiltViewModel()
     val uiState by viewModel.uiState.collectAsState()
+    val context = LocalContext.current
     val snackbarHostState = remember { SnackbarHostState() }
 
     LaunchedEffect(uiState.error) {
@@ -105,19 +107,18 @@ fun CardListScreen(
                         .padding(horizontal = 16.dp, vertical = 4.dp),
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    FilledTonalButton(
-                        onClick = { viewModel.onFilterTagChanged(null) },
-                        enabled = uiState.filterTagId != null
-                    ) {
-                        Text("All")
-                    }
+                    FilterChip(
+                        selected = uiState.showAll,
+                        onClick = { viewModel.onSelectAllTags() },
+                        label = { Text("All") }
+                    )
                     uiState.tags.forEach { tag ->
-                        val isSelected = uiState.filterTagId == tag.id
-                        FilledTonalButton(
-                            onClick = { viewModel.onFilterTagChanged(tag.id) }
-                        ) {
-                            Text(if (isSelected) "✓ ${tag.name}" else tag.name)
-                        }
+                        val isSelected = uiState.selectedTagIds.contains(tag.id)
+                        FilterChip(
+                            selected = isSelected,
+                            onClick = { viewModel.onToggleTag(tag.id) },
+                            label = { Text(tag.name) }
+                        )
                     }
                 }
             }
@@ -170,6 +171,7 @@ fun CardListScreen(
                     items(uiState.cards, key = { it.card.id }) { card ->
                         CardListItem(
                             card = card,
+                            context = context,
                             onClick = { onCardClick(card.card.id) }
                         )
                     }
@@ -182,8 +184,10 @@ fun CardListScreen(
 @Composable
 private fun CardListItem(
     card: CardWithTags,
+    context: android.content.Context,
     onClick: () -> Unit
 ) {
+    val absolutePath = card.card.imagePath?.let { java.io.File(context.filesDir, it).absolutePath }
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -192,7 +196,7 @@ private fun CardListItem(
         verticalAlignment = Alignment.CenterVertically
     ) {
         AsyncImage(
-            model = card.card.imagePath,
+            model = absolutePath,
             contentDescription = "Card image",
             modifier = Modifier
                 .size(64.dp)

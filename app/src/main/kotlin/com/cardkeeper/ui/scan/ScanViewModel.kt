@@ -21,7 +21,6 @@ import kotlinx.coroutines.launch
 
 sealed class ScanState {
     object Idle : ScanState()
-    object Capturing : ScanState()
     object LoadingOcr : ScanState()
     object Saving : ScanState()
     object Saved : ScanState()
@@ -68,10 +67,6 @@ class ScanViewModel @Inject constructor(
         _scanState.value = ScanState.Idle
     }
 
-    fun setCapturing() {
-        _scanState.value = ScanState.Capturing
-    }
-
     fun setError(message: String) {
         _scanState.value = ScanState.Error(message)
     }
@@ -92,7 +87,7 @@ class ScanViewModel @Inject constructor(
         onReady: (String) -> Unit,
         onError: (String) -> Unit = {}
     ) {
-        _scanState.value = ScanState.Capturing
+        _scanState.value = ScanState.Idle
         try {
             val tempFile = File(
                 context.cacheDir,

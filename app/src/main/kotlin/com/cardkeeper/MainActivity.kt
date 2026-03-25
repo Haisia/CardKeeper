@@ -6,7 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.CameraAlt
+import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Label
 import androidx.compose.material.icons.rounded.Style
 import androidx.compose.material3.Icon
@@ -22,7 +22,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.cardkeeper.ui.navigation.AppNavHost
 import com.cardkeeper.ui.navigation.CardListRoute
-import com.cardkeeper.ui.navigation.ScanFlowRoute
+import com.cardkeeper.ui.navigation.ScanRoute
 import com.cardkeeper.ui.navigation.TagManagerRoute
 import com.cardkeeper.ui.theme.CardKeeperTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -52,15 +52,15 @@ class MainActivity : ComponentActivity() {
                             )
                             NavigationBarItem(
                                 selected = navBackStackEntry?.destination?.hierarchy?.any {
-                                    it.hasRoute<ScanFlowRoute>()
+                                    it.hasRoute<ScanRoute>()
                                 } == true,
                                 onClick = {
-                                    navController.navigate(ScanFlowRoute) {
+                                    navController.navigate(ScanRoute) {
                                         popUpTo(CardListRoute)
                                     }
                                 },
-                                icon = { Icon(Icons.Rounded.CameraAlt, contentDescription = "Scan") },
-                                label = { Text("Scan") }
+                                icon = { Icon(Icons.Rounded.Add, contentDescription = "Import") },
+                                label = { Text("Import") }
                             )
                             NavigationBarItem(
                                 selected = currentRoute == TagManagerRoute::class.qualifiedName,

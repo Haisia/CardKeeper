@@ -9,8 +9,10 @@ import com.cardkeeper.domain.repository.TagRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
@@ -24,7 +26,8 @@ data class CardListUiState(
     val error: String? = null,
     val searchQuery: String = "",
     val tags: List<TagEntity> = emptyList(),
-    val filterTagId: Long? = null
+    val selectedTagIds: Set<Long> = emptySet(),
+    val showAll: Boolean = true
 )
 
 @OptIn(FlowPreview::class)
@@ -37,8 +40,8 @@ class CardListViewModel @Inject constructor(
     private val _searchQuery = MutableStateFlow("")
     val searchQuery: StateFlow<String> = _searchQuery.asStateFlow()
 
-    private val _filterTagId = MutableStateFlow<Long?>(null)
-    val filterTagId: StateFlow<Long?> = _filterTagId.asStateFlow()
+    private val _selectedTagIds = MutableStateFlow<Set<Long>>(emptySet())
+    val selectedTagIds: StateFlow<Set<Long>> = _selectedTagIds.asStateFlow()
 
     private val _uiState = MutableStateFlow(CardListUiState())
     val uiState: StateFlow<CardListUiState> = _uiState.asStateFlow()
@@ -50,11 +53,18 @@ class CardListViewModel @Inject constructor(
             }
         }
         viewModelScope.launch {
-            _searchQuery
-                .debounce(300)
+            combine(_searchQuery.debounce(300), _selectedTagIds) { query, tagIds ->
+                query to tagIds
+            }
                 .distinctUntilChanged()
-                .flatMapLatest { query ->
-                    cardRepository.getAllCards()
+                .flatMapLatest { (query, tagIds) ->
+                    val filteredCards: Flow<List<CardWithTags>> = when {
+                        tagIds.isNotEmpty() && query.isNotBlank() -> cardRepository.searchCardsByTags(tagIds, query)
+                        tagIds.isNotEmpty() -> cardRepository.getCardsByTags(tagIds)
+                        query.isNotBlank() -> cardRepository.searchCards(query)
+                        else -> cardRepository.getAllCards()
+                    }
+                    filteredCards
                 }
                 .onEach { _uiState.value = _uiState.value.copy(isLoading = false, error = null) }
                 .collect { cards ->
@@ -69,21 +79,15 @@ class CardListViewModel @Inject constructor(
         _uiState.value = _uiState.value.copy(searchQuery = query)
     }
 
-    fun onFilterTagChanged(tagId: Long?) {
-        _filterTagId.value = tagId
-        val currentCards = _uiState.value.cards
-        _uiState.value = _uiState.value.copy(filterTagId = tagId)
-        val allCards = currentCards
-        if (tagId == null) {
-            viewModelScope.launch {
-                cardRepository.getAllCards().collect { cards ->
-                    _uiState.value = _uiState.value.copy(cards = cards)
-                }
-            }
-        } else {
-            _uiState.value = _uiState.value.copy(
-                cards = allCards.filter { card -> card.tags.any { it.id == tagId } }
-            )
-        }
+    fun onToggleTag(tagId: Long) {
+        val current = _selectedTagIds.value.toMutableSet()
+        if (current.contains(tagId)) current.remove(tagId) else current.add(tagId)
+        _selectedTagIds.value = current
+        _uiState.value = _uiState.value.copy(selectedTagIds = current, showAll = false)
+    }
+
+    fun onSelectAllTags() {
+        _selectedTagIds.value = emptySet()
+        _uiState.value = _uiState.value.copy(selectedTagIds = emptySet(), showAll = true)
     }
 }

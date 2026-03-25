@@ -31,6 +31,28 @@ interface CardDao {
     """)
     fun searchCards(query: String): Flow<List<CardWithTags>>
 
+    @Transaction
+    @Query("""
+        SELECT DISTINCT c.* FROM cards c
+        INNER JOIN card_tag_cross_ref ct ON c.id = ct.cardId
+        WHERE ct.tagId IN (:tagIds)
+        ORDER BY c.updatedAt DESC
+    """)
+    fun getCardsByTags(tagIds: Collection<Long>): Flow<List<CardWithTags>>
+
+    @Transaction
+    @Query("""
+        SELECT DISTINCT c.* FROM cards c
+        INNER JOIN card_tag_cross_ref ct ON c.id = ct.cardId
+        LEFT JOIN tags t ON ct.tagId = t.id
+        WHERE ct.tagId IN (:tagIds)
+           AND (c.name LIKE :query
+                OR c.company LIKE :query
+                OR c.jobTitle LIKE :query)
+        ORDER BY c.updatedAt DESC
+    """)
+    fun searchCardsByTags(tagIds: Collection<Long>, query: String): Flow<List<CardWithTags>>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertCard(card: CardEntity): Long
 

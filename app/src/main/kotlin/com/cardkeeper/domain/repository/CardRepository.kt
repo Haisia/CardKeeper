@@ -8,6 +8,8 @@ interface CardRepository {
     fun getAllCards(): Flow<List<CardWithTags>>
     fun getCardById(cardId: Long): Flow<CardWithTags?>
     fun searchCards(query: String): Flow<List<CardWithTags>>
+    fun getCardsByTags(tagIds: Collection<Long>): Flow<List<CardWithTags>>
+    fun searchCardsByTags(tagIds: Collection<Long>, query: String): Flow<List<CardWithTags>>
     suspend fun insertCard(card: CardEntity): Long
     suspend fun updateCard(card: CardEntity)
     suspend fun deleteCard(card: CardEntity)
