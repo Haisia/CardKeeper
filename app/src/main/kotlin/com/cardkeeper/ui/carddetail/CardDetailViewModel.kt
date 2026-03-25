@@ -82,7 +82,7 @@ class CardDetailViewModel @Inject constructor(
             try {
                 val updated = card.card.copy(
                     name = name, company = company, jobTitle = jobTitle,
-                    phone = phone, email = email, address = address,
+                    phone = phone.filter { it.isDigit() }, email = email, address = address,
                     memo = memo,
                     updatedAt = System.currentTimeMillis()
                 )

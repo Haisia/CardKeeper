@@ -240,7 +240,7 @@ private fun ViewMode(
         DetailRow(label = "이름 (Name)", value = card.card.name)
         DetailRow(label = "회사 (Company)", value = card.card.company)
         DetailRow(label = "직책 (Job Title)", value = card.card.jobTitle)
-        DetailRow(label = "전화 (Phone)", value = card.card.phone)
+        DetailRow(label = "전화 (Phone)", value = formatPhoneNumber(card.card.phone))
         DetailRow(label = "이메일 (Email)", value = card.card.email)
         DetailRow(label = "주소 (Address)", value = card.card.address)
 
@@ -316,6 +316,15 @@ private fun FullscreenImageViewer(imagePath: String, onDismiss: () -> Unit) {
                 )
             }
         }
+    }
+}
+
+private fun formatPhoneNumber(phone: String): String {
+    val digits = phone.filter { it.isDigit() }
+    return when (digits.length) {
+        11 -> "${digits.substring(0, 3)}-${digits.substring(3, 7)}-${digits.substring(7)}"
+        10 -> "${digits.substring(0, 3)}-${digits.substring(3, 6)}-${digits.substring(6)}"
+        else -> phone
     }
 }
 

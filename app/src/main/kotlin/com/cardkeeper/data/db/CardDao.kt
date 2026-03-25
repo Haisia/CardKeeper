@@ -27,6 +27,8 @@ interface CardDao {
         WHERE c.name LIKE :query
            OR c.company LIKE :query
            OR c.jobTitle LIKE :query
+           OR c.memo LIKE :query
+           OR c.phone LIKE :query
         ORDER BY c.updatedAt DESC
     """)
     fun searchCards(query: String): Flow<List<CardWithTags>>
@@ -48,7 +50,9 @@ interface CardDao {
         WHERE ct.tagId IN (:tagIds)
            AND (c.name LIKE :query
                 OR c.company LIKE :query
-                OR c.jobTitle LIKE :query)
+                OR c.jobTitle LIKE :query
+                OR c.memo LIKE :query
+                OR c.phone LIKE :query)
         ORDER BY c.updatedAt DESC
     """)
     fun searchCardsByTags(tagIds: Collection<Long>, query: String): Flow<List<CardWithTags>>

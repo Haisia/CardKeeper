@@ -196,7 +196,7 @@ class ScanViewModel @Inject constructor(
                     name = form.name,
                     company = form.company,
                     jobTitle = form.jobTitle,
-                    phone = form.phone,
+                    phone = form.phone.filter { it.isDigit() },
                     email = form.email,
                     address = form.address,
                     memo = "",
