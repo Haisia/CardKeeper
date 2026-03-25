@@ -53,23 +53,33 @@ fun TagManagerScreen(onBack: () -> Unit) {
 
     if (showAddDialog) {
         var newTagName by remember { mutableStateOf("") }
+        val isDuplicate = tags.any { it.name.equals(newTagName.trim(), ignoreCase = true) }
         AlertDialog(
             onDismissRequest = { showAddDialog = false },
-            title = { Text("New Tag") },
+            title = { Text(if (isDuplicate) "Duplicate Tag" else "New Tag") },
             text = {
-                OutlinedTextField(
-                    value = newTagName,
-                    onValueChange = { newTagName = it },
-                    label = { Text("Tag name") },
-                    singleLine = true,
-                    shape = RoundedCornerShape(12.dp),
-                    colors = OutlinedTextFieldDefaults.colors(
-                        unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant,
-                        unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainer,
-                        focusedBorderColor = MaterialTheme.colorScheme.primary,
-                        focusedContainerColor = MaterialTheme.colorScheme.surfaceContainer
+                Column {
+                    if (isDuplicate) {
+                        Text(
+                            "A tag named \"${newTagName.trim()}\" already exists.",
+                            color = MaterialTheme.colorScheme.error
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                    }
+                    OutlinedTextField(
+                        value = newTagName,
+                        onValueChange = { newTagName = it },
+                        label = { Text("Tag name") },
+                        singleLine = true,
+                        shape = RoundedCornerShape(12.dp),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant,
+                            unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainer,
+                            focusedBorderColor = MaterialTheme.colorScheme.primary,
+                            focusedContainerColor = MaterialTheme.colorScheme.surfaceContainer
+                        )
                     )
-                )
+                }
             },
             containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
             confirmButton = {
@@ -78,7 +88,7 @@ fun TagManagerScreen(onBack: () -> Unit) {
                         viewModel.addTag(newTagName.trim())
                         showAddDialog = false
                     },
-                    enabled = newTagName.isNotBlank()
+                    enabled = newTagName.isNotBlank() && !isDuplicate
                 ) { Text("Add") }
             },
             dismissButton = {

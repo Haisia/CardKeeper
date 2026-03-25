@@ -27,13 +27,19 @@ import androidx.compose.material.icons.rounded.Mail
 import androidx.compose.material.icons.rounded.Share
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
@@ -429,6 +435,7 @@ private fun formatPhoneNumber(phone: String): String {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun EditMode(
     card: CardWithTags,
@@ -477,28 +484,53 @@ private fun EditMode(
         )
 
         if (availableTags.isNotEmpty()) {
-            Text(
-                text = "태그 (Tags)",
-                style = MaterialTheme.typography.labelLarge,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            var tagExpanded by remember { mutableStateOf(false) }
+            ExposedDropdownMenuBox(
+                expanded = tagExpanded,
+                onExpandedChange = { tagExpanded = it }
             ) {
-                availableTags.forEach { tag ->
-                    val isSelected = tag.id in selectedTagIds
-                    FilterChip(
-                        selected = isSelected,
-                        onClick = {
-                            selectedTagIds = if (isSelected) {
-                                selectedTagIds - tag.id
-                            } else {
-                                selectedTagIds + tag.id
-                            }
-                        },
-                        label = { Text(tag.name) }
+                OutlinedTextField(
+                    value = availableTags.filter { it.id in selectedTagIds }.joinToString(", ") { it.name }.ifEmpty { "태그 없음" },
+                    onValueChange = {},
+                    readOnly = true,
+                    label = { Text("태그 (Tags)") },
+                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = tagExpanded) },
+                    modifier = Modifier
+                        .menuAnchor(MenuAnchorType.PrimaryNotEditable)
+                        .fillMaxWidth(),
+                    shape = RoundedCornerShape(12.dp),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant,
+                        unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainer,
+                        focusedBorderColor = MaterialTheme.colorScheme.primary,
+                        focusedContainerColor = MaterialTheme.colorScheme.surfaceContainer
                     )
+                )
+                ExposedDropdownMenu(
+                    expanded = tagExpanded,
+                    onDismissRequest = { tagExpanded = false },
+                    containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+                    shape = RoundedCornerShape(12.dp)
+                ) {
+                    availableTags.forEach { tag ->
+                        val isSelected = tag.id in selectedTagIds
+                        DropdownMenuItem(
+                            text = { Text(tag.name) },
+                            leadingIcon = {
+                                Checkbox(
+                                    checked = isSelected,
+                                    onCheckedChange = null
+                                )
+                            },
+                            onClick = {
+                                selectedTagIds = if (isSelected) {
+                                    selectedTagIds - tag.id
+                                } else {
+                                    selectedTagIds + tag.id
+                                }
+                            }
+                        )
+                    }
                 }
             }
         }
