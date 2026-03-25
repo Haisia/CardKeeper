@@ -2,7 +2,7 @@ package com.cardkeeper.di
 
 import com.google.mlkit.vision.text.TextRecognition
 import com.google.mlkit.vision.text.TextRecognizer
-import com.google.mlkit.vision.text.latin.TextRecognizerOptions
+import com.google.mlkit.vision.text.korean.KoreanTextRecognizerOptions
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -16,5 +16,5 @@ object OcrModule {
     @Singleton
     @Provides
     fun provideTextRecognizer(): TextRecognizer =
-        TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS)
+        TextRecognition.getClient(KoreanTextRecognizerOptions.Builder().build())
 }
