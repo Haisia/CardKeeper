@@ -4,7 +4,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.cardkeeper.data.db.CardEntity
 import com.cardkeeper.data.db.CardWithTags
+import com.cardkeeper.data.db.TagEntity
 import com.cardkeeper.domain.repository.CardRepository
+import com.cardkeeper.domain.repository.TagRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -25,11 +27,15 @@ data class CardDetailUiState(
 
 @HiltViewModel
 class CardDetailViewModel @Inject constructor(
-    private val cardRepository: CardRepository
+    private val cardRepository: CardRepository,
+    private val tagRepository: TagRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(CardDetailUiState())
     val uiState: StateFlow<CardDetailUiState> = _uiState.asStateFlow()
+
+    private val _availableTags = MutableStateFlow<List<TagEntity>>(emptyList())
+    val availableTags: StateFlow<List<TagEntity>> = _availableTags.asStateFlow()
 
     private var loadedCardId: Long = -1
 
@@ -38,6 +44,7 @@ class CardDetailViewModel @Inject constructor(
         loadedCardId = cardId
         _uiState.value = _uiState.value.copy(isLoading = true, error = null)
         viewModelScope.launch {
+            launch { tagRepository.getAllTags().collect { _availableTags.value = it } }
             try {
                 cardRepository.getCardById(cardId)
                     .collect { card ->
@@ -66,7 +73,8 @@ class CardDetailViewModel @Inject constructor(
 
     fun saveCard(
         name: String, company: String, jobTitle: String,
-        phone: String, email: String, address: String
+        phone: String, email: String, address: String, memo: String,
+        selectedTagIds: List<Long>
     ) {
         val card = _uiState.value.card ?: return
         if (_uiState.value.isSaving) return
@@ -77,9 +85,11 @@ class CardDetailViewModel @Inject constructor(
                 val updated = card.card.copy(
                     name = name, company = company, jobTitle = jobTitle,
                     phone = phone, email = email, address = address,
+                    memo = memo,
                     updatedAt = System.currentTimeMillis()
                 )
                 cardRepository.updateCard(updated)
+                tagRepository.setTagsForCard(card.card.id, selectedTagIds)
                 _uiState.value = _uiState.value.copy(isSaving = false, isEditing = false)
             } catch (e: Exception) {
                 _uiState.value = _uiState.value.copy(

@@ -50,6 +50,13 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil3.compose.AsyncImage
 import com.cardkeeper.data.db.CardWithTags
+import com.cardkeeper.data.db.TagEntity
+
+data class CardEditData(
+    val name: String, val company: String, val jobTitle: String,
+    val phone: String, val email: String, val address: String,
+    val memo: String, val tagIds: List<Long>
+)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -60,6 +67,7 @@ fun CardDetailScreen(
 ) {
     val viewModel: CardDetailViewModel = hiltViewModel()
     val uiState by viewModel.uiState.collectAsState()
+    val availableTags by viewModel.availableTags.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
 
     LaunchedEffect(cardId) {
@@ -153,9 +161,10 @@ fun CardDetailScreen(
         } else if (uiState.isEditing) {
             EditMode(
                 card = card,
+                availableTags = availableTags,
                 isSaving = uiState.isSaving,
-                onSave = { name, company, jobTitle, phone, email, address ->
-                    viewModel.saveCard(name, company, jobTitle, phone, email, address)
+                onSave = { data ->
+                    viewModel.saveCard(data.name, data.company, data.jobTitle, data.phone, data.email, data.address, data.memo, data.tagIds)
                 },
                 onCancel = { viewModel.setEditing(false) },
                 modifier = Modifier.padding(innerPadding)
@@ -194,6 +203,19 @@ private fun ViewMode(card: CardWithTags, modifier: Modifier = Modifier) {
         DetailRow(label = "전화 (Phone)", value = card.card.phone)
         DetailRow(label = "이메일 (Email)", value = card.card.email)
         DetailRow(label = "주소 (Address)", value = card.card.address)
+
+        if (card.card.memo.isNotBlank()) {
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+                text = "메모 (Memo)",
+                style = MaterialTheme.typography.labelLarge,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+            Text(
+                text = card.card.memo,
+                style = MaterialTheme.typography.bodyLarge
+            )
+        }
 
         if (card.tags.isNotEmpty()) {
             Row(
@@ -239,8 +261,9 @@ private fun DetailRow(label: String, value: String) {
 @Composable
 private fun EditMode(
     card: CardWithTags,
+    availableTags: List<TagEntity>,
     isSaving: Boolean,
-    onSave: (String, String, String, String, String, String) -> Unit,
+    onSave: (CardEditData) -> Unit,
     onCancel: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -250,6 +273,10 @@ private fun EditMode(
     var phone by remember(card.card.id) { mutableStateOf(card.card.phone) }
     var email by remember(card.card.id) { mutableStateOf(card.card.email) }
     var address by remember(card.card.id) { mutableStateOf(card.card.address) }
+    var memo by remember(card.card.id) { mutableStateOf(card.card.memo) }
+    var selectedTagIds by remember(card.card.id) {
+        mutableStateOf(card.tags.map { it.id })
+    }
 
     Column(
         modifier = modifier
@@ -270,6 +297,40 @@ private fun EditMode(
             singleLine = false,
             minLines = 2
         )
+        EditField(
+            label = "메모 (Memo)",
+            value = memo,
+            onValueChange = { memo = it },
+            singleLine = false,
+            minLines = 3
+        )
+
+        if (availableTags.isNotEmpty()) {
+            Text(
+                text = "태그 (Tags)",
+                style = MaterialTheme.typography.labelLarge,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                availableTags.forEach { tag ->
+                    val isSelected = tag.id in selectedTagIds
+                    FilledTonalButton(
+                        onClick = {
+                            selectedTagIds = if (isSelected) {
+                                selectedTagIds - tag.id
+                            } else {
+                                selectedTagIds + tag.id
+                            }
+                        }
+                    ) {
+                        Text(if (isSelected) "✓ ${tag.name}" else tag.name)
+                    }
+                }
+            }
+        }
 
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -285,7 +346,7 @@ private fun EditMode(
                 Text("Cancel")
             }
             Button(
-                onClick = { onSave(name, company, jobTitle, phone, email, address) },
+                onClick = { onSave(CardEditData(name, company, jobTitle, phone, email, address, memo, selectedTagIds)) },
                 modifier = Modifier.weight(1f),
                 enabled = !isSaving
             ) {

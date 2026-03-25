@@ -6,26 +6,29 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.CameraAlt
+import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -39,6 +42,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil3.compose.AsyncImage
 import com.cardkeeper.data.db.CardWithTags
+import com.cardkeeper.data.db.TagEntity
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -78,6 +82,46 @@ fun CardListScreen(
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
+            OutlinedTextField(
+                value = uiState.searchQuery,
+                onValueChange = viewModel::onSearchQueryChanged,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 4.dp),
+                placeholder = { Text("검색 (Search)...") },
+                leadingIcon = { Icon(Icons.Rounded.Search, contentDescription = null) },
+                singleLine = true,
+                shape = MaterialTheme.shapes.large,
+                colors = OutlinedTextFieldDefaults.colors(
+                    unfocusedBorderColor = MaterialTheme.colorScheme.surfaceVariant,
+                    unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant
+                )
+            )
+
+            if (uiState.tags.isNotEmpty()) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 4.dp),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    FilledTonalButton(
+                        onClick = { viewModel.onFilterTagChanged(null) },
+                        enabled = uiState.filterTagId != null
+                    ) {
+                        Text("All")
+                    }
+                    uiState.tags.forEach { tag ->
+                        val isSelected = uiState.filterTagId == tag.id
+                        FilledTonalButton(
+                            onClick = { viewModel.onFilterTagChanged(tag.id) }
+                        ) {
+                            Text(if (isSelected) "✓ ${tag.name}" else tag.name)
+                        }
+                    }
+                }
+            }
+
             if (uiState.isLoading) {
                 Box(
                     modifier = Modifier
@@ -99,11 +143,19 @@ fun CardListScreen(
                         verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         Text(
-                            "No cards yet",
+                            text = if (uiState.searchQuery.isNotBlank()) {
+                                "No results for \"${uiState.searchQuery}\""
+                            } else {
+                                "No cards yet"
+                            },
                             style = MaterialTheme.typography.headlineMedium
                         )
                         Text(
-                            "Tap the camera button to scan your first card",
+                            text = if (uiState.searchQuery.isNotBlank()) {
+                                "Try a different search term"
+                            } else {
+                                "Tap the camera button to scan your first card"
+                            },
                             style = MaterialTheme.typography.bodyLarge,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
