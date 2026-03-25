@@ -1,6 +1,9 @@
 package com.cardkeeper.ui.carddetail
 
 import android.content.Intent
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -46,12 +49,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil3.compose.AsyncImage
-import androidx.compose.ui.platform.LocalContext
 import com.cardkeeper.data.datasource.ContactsDataSource
 import com.cardkeeper.data.db.CardWithTags
 import com.cardkeeper.data.db.TagEntity
@@ -74,6 +78,7 @@ fun CardDetailScreen(
     val availableTags by viewModel.availableTags.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
     val context = LocalContext.current
+    var fullscreenImagePath by remember { mutableStateOf<String?>(null) }
 
     LaunchedEffect(cardId) {
         viewModel.loadCard(cardId)
@@ -193,14 +198,27 @@ fun CardDetailScreen(
                 ViewMode(
                     card = card,
                     imagePath = absolutePath,
+                    onImageClick = { fullscreenImagePath = absolutePath },
                 modifier = Modifier.padding(innerPadding)
             )
         }
     }
+
+    if (fullscreenImagePath != null) {
+        FullscreenImageViewer(
+            imagePath = fullscreenImagePath!!,
+            onDismiss = { fullscreenImagePath = null }
+        )
+    }
 }
 
 @Composable
-private fun ViewMode(card: CardWithTags, imagePath: String?, modifier: Modifier = Modifier) {
+private fun ViewMode(
+    card: CardWithTags,
+    imagePath: String?,
+    onImageClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -214,7 +232,8 @@ private fun ViewMode(card: CardWithTags, imagePath: String?, modifier: Modifier 
             modifier = Modifier
                 .fillMaxWidth()
                 .height(200.dp)
-                .clip(RoundedCornerShape(12.dp)),
+                .clip(RoundedCornerShape(12.dp))
+                .clickable { onImageClick() },
             contentScale = ContentScale.Fit
         )
 
@@ -255,6 +274,48 @@ private fun ViewMode(card: CardWithTags, imagePath: String?, modifier: Modifier 
         }
 
         Spacer(modifier = Modifier.height(32.dp))
+    }
+}
+
+@Composable
+private fun FullscreenImageViewer(imagePath: String, onDismiss: () -> Unit) {
+    androidx.compose.ui.window.Dialog(
+        onDismissRequest = onDismiss,
+        properties = androidx.compose.ui.window.DialogProperties(
+            usePlatformDefaultWidth = false,
+            decorFitsSystemWindows = false
+        )
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = null,
+                    onClick = onDismiss
+                )
+                .background(Color.Black),
+            contentAlignment = Alignment.Center
+        ) {
+            AsyncImage(
+                model = imagePath,
+                contentDescription = "Card image fullscreen",
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.Fit
+            )
+            IconButton(
+                onClick = onDismiss,
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(16.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
+                    contentDescription = "Close",
+                    tint = Color.White
+                )
+            }
+        }
     }
 }
 
