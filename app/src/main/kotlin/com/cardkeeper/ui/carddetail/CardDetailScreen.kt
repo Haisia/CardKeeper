@@ -1,5 +1,6 @@
 package com.cardkeeper.ui.carddetail
 
+import android.content.Intent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,6 +19,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material.icons.rounded.Edit
+import androidx.compose.material.icons.rounded.Share
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
@@ -49,6 +51,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil3.compose.AsyncImage
+import androidx.compose.ui.platform.LocalContext
+import com.cardkeeper.data.datasource.ContactsDataSource
 import com.cardkeeper.data.db.CardWithTags
 import com.cardkeeper.data.db.TagEntity
 
@@ -69,6 +73,7 @@ fun CardDetailScreen(
     val uiState by viewModel.uiState.collectAsState()
     val availableTags by viewModel.availableTags.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
+    val context = LocalContext.current
 
     LaunchedEffect(cardId) {
         viewModel.loadCard(cardId)
@@ -122,6 +127,20 @@ fun CardDetailScreen(
                 },
                 actions = {
                     if (!uiState.isEditing) {
+                        IconButton(onClick = {
+                            val card = uiState.card ?: return@IconButton
+                            val contactsDataSource = ContactsDataSource(context)
+                            val intent = contactsDataSource.createExportIntent(
+                                name = card.card.name,
+                                company = card.card.company,
+                                jobTitle = card.card.jobTitle,
+                                phone = card.card.phone,
+                                email = card.card.email
+                            )
+                            context.startActivity(intent)
+                        }) {
+                            Icon(Icons.Rounded.Share, contentDescription = "Export to Contacts")
+                        }
                         IconButton(onClick = { viewModel.setEditing(true) }) {
                             Icon(Icons.Rounded.Edit, contentDescription = "Edit")
                         }
