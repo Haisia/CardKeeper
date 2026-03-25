@@ -1,6 +1,10 @@
 package com.cardkeeper.ui.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -8,6 +12,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.toRoute
 import com.cardkeeper.ui.carddetail.CardDetailScreen
+import com.cardkeeper.ui.carddetail.CardDetailViewModel
 import com.cardkeeper.ui.cardlist.CardListScreen
 import com.cardkeeper.ui.scan.OcrReviewScreen
 import com.cardkeeper.ui.scan.ScanScreen
@@ -24,9 +29,26 @@ fun AppNavHost(navController: NavHostController) {
                 onTagManagerClick = { navController.navigate(TagManagerRoute) }
             )
         }
-        composable<CardDetailRoute> { backStackEntry ->
-            val route = backStackEntry.toRoute<CardDetailRoute>()
-            CardDetailScreen(cardId = route.cardId, onBack = { navController.popBackStack() })
+        composable<CardDetailRoute> {
+            val viewModel: CardDetailViewModel = hiltViewModel()
+            val route = it.toRoute<CardDetailRoute>()
+            val uiState by viewModel.uiState.collectAsState()
+
+            LaunchedEffect(route.cardId) {
+                viewModel.loadCard(route.cardId)
+            }
+
+            LaunchedEffect(uiState.card) {
+                if (uiState.card == null && !uiState.isLoading) {
+                    navController.popBackStack()
+                }
+            }
+
+            CardDetailScreen(
+                cardId = route.cardId,
+                onDeleted = { navController.popBackStack() },
+                onBack = { navController.popBackStack() }
+            )
         }
         navigation<ScanFlowRoute>(startDestination = ScanRoute) {
             composable<ScanRoute> {
