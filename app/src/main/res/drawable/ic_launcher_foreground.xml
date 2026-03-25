@@ -1,0 +1,29 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- Card body -->
+    <path
+        android:fillColor="#7B9EFF"
+        android:pathData="M30,28 L78,28 C80.2,28 82,29.8 82,32 L82,72 C82,74.2 80.2,76 78,76 L30,76 C27.8,76 26,74.2 26,72 L26,32 C26,29.8 27.8,28 30,28 Z"/>
+    <!-- Card top accent bar -->
+    <path
+        android:fillColor="#5B7FE0"
+        android:pathData="M30,28 L78,28 C80.2,28 82,29.8 82,32 L82,40 L26,40 L26,32 C26,29.8 27.8,28 30,28 Z"/>
+    <!-- Person circle -->
+    <path
+        android:fillColor="#0F1115"
+        android:pathData="M54,50 m-7,0 a7,7 0,1,1 14,0 a7,7 0,1,1 -14,0"/>
+    <!-- Person body arc -->
+    <path
+        android:fillColor="#0F1115"
+        android:pathData="M40,72 C40,63.7 46.3,57 54,57 C61.7,57 68,63.7 68,72"/>
+    <!-- Name lines -->
+    <path
+        android:fillColor="#1A1D24"
+        android:pathData="M36,32 L72,32"/>
+    <path
+        android:fillColor="#1A1D24"
+        android:pathData="M36,35 L60,35"/>
+</vector>
